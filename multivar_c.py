@@ -176,11 +176,3 @@ df['sig'] = locations
 
 df.plot(column='sig', cmap='OrRd', edgecolor='black')
 
-
-
-
-'''--------'''
-
-y = df['k2']
-
-lg = ps.G_Local(y,w)
