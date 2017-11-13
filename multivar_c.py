@@ -22,7 +22,7 @@ import scipy.stats as st
 '''
 #INPUT DATA 
 '''
-path = "C:/Users/utente/Desktop/multivar_SA/simple_test_c/grid5_rnd.shp"
+path = "a polygons.shp"
 
 df = gpd.read_file(path)
 
