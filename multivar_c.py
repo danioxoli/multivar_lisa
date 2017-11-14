@@ -149,19 +149,25 @@ for i in range(0,np.shape(att_arrs_norm)[1]):
 
 # plot reference distribution from permutation for the i_th location  
 
-import matplotlib.pyplot as plt
-import seaborn as sns
-
-i = 23
-
-sns.kdeplot(C_ki_perm[i], shade=True)
-plt.vlines(C_ki_perm[i], 0, 0.005)
-plt.vlines(C_ki[i], 0, 10, 'r')
-
-
-sns.kdeplot(p_norm, shade=True)
-plt.vlines(p_norm, 0, 0.05)
-plt.xlim([0, 1])
+#import matplotlib.pyplot as plt
+#import seaborn as sns
+#
+#i = 81
+#
+#sns.kdeplot(C_ki, shade=True, color='g', label='perm. mean')
+#plt.vlines(C_ki, 0, 0.005, 'r')
+#plt.vlines(np.mean(C_ki), 0, 10, 'g')
+#plt.vlines(np.mean(C_ki)-np.std(C_ki), 0, 10, 'g','dotted')
+#plt.vlines(np.mean(C_ki)+np.std(C_ki), 0, 10, 'g','dotted')
+##plt.xlim([0.0, 20.0])
+#
+#plt.vlines(C_ki[i], 0, 10, 'r', label='obs statistic')
+#
+#sns.kdeplot(C_ki_perm[i], shade=True, color="c", label='perm. dist.')
+#plt.vlines(C_ki_perm[i], 0, 0.005, 'k')
+#plt.vlines(np.mean(C_ki_perm[i]), 0, 10, 'b')
+#plt.vlines(np.mean(C_ki_perm[i])-np.std(C_ki_perm[i]), 0, 10, 'b', 'dashed')
+#plt.vlines(np.mean(C_ki_perm[i])+np.std(C_ki_perm[i]), 0, 10, 'b', 'dashed')
 
 
 # plot locations of interest in the dataset 
@@ -169,7 +175,6 @@ plt.xlim([0, 1])
 sig = p_sim <= 0.1
 
 corr_lower = C_ki >= np.mean(C_ki)
-
 corr_higher = C_ki < np.mean(C_ki)
 
 locations = np.zeros((np.shape(att_arrs_norm)[1]))
