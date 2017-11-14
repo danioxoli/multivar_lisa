@@ -48,8 +48,10 @@ permutations = 19 # number of random permutations
 w = ps.weights.Queen.from_dataframe(df)
 w.transform= 'r'
 wf = w.full()[0]
-		
-att_arrs = [df['k1'],df['k2'],df['k3']]
+
+# list of the column containing the analysis attributes - test with 3
+df.rename(columns={"attribute1": "k1", "attribute2": "k2", "attribute1": "k3"},inplace=True)
+att_arrs = [df['k1'],df['k2'],df['k3']] 
 att_mtx = np.array(att_arrs).transpose()
 
 att_arrs_norm = [(df['k1']-df['k1'].mean())/df['k1'].std(),
