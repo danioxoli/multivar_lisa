@@ -6,7 +6,7 @@ Created on Wed Nov 08 15:44:19 2017
 # Purpose:  Application of the Local Geary c statistic to a multivariate context using vector layers 
 # Author:   Daniele Oxoli (daniele.oxoli@polimi.it)
 # Affiliation: a) Department of Civil and Environmental Engineering | GEOlab, Politecnico di Milano, P.zza Leonardo da Vinci 32, 20133, Milano, Italy
-#              b) Department of Infrastructure Engineering, CSDILA, The University of Melbourne, Melbourne, Vic, Australia
+#              b) Department of Infrastructure Engineering, Centre for SDIs and Land Administration, The University of Melbourne, Melbourne, Victoria 3010, Australia
 #
 """
 
