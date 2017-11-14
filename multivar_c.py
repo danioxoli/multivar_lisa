@@ -166,13 +166,21 @@ plt.xlim([0, 1])
 
 # plot locations of interest in the dataset 
 
-sig = p_norm >= 0.9
+sig = p_sim <= 0.1
+
+corr_lower = C_ki >= np.mean(C_ki)
+
+corr_higher = C_ki < np.mean(C_ki)
 
 locations = np.zeros((np.shape(att_arrs_norm)[1]))
 
-locations[sig] = 1
+locations[sig*corr_higher] = 1
+locations[sig*corr_lower] = -1
 
-df['sig'] = locations
+df['sig_locations'] = locations
 
-df.plot(column='sig', cmap='OrRd', edgecolor='black')
+
+'''-------- SAVE THE MODIFIED GEODATAFRAME TO A NEW SHAPEFILE '''
+
+df.to_file(driver = 'ESRI Shapefile', filename= "../result.shp")
 
