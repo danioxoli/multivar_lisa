@@ -44,9 +44,8 @@ permutations = 19 # number of random permutations
 #SPATIAL WEIGHTS AND ATTRIBUTE MATRICES EXTRACTION
 '''
 
-
 w = ps.weights.Queen.from_dataframe(df)
-w.transform= 'r'
+w.transform= weigth_type
 wf = w.full()[0]
 
 # list of the column containing the analysis attributes - test with 3
@@ -63,10 +62,6 @@ norm_sum = np.zeros(np.shape(att_mtx_norm)[0])
 for j in range (0, len(norm_sum)):
     norm_sum[j] = sum(att_mtx_norm[j])
     
-df['norm_sum'] = norm_sum
-
-df.plot(column='norm_sum', cmap='OrRd', scheme='quantiles', edgecolor='black')
-
 '''
 #REAL STATISTIC COMPUTATION
 '''
@@ -184,10 +179,14 @@ locations = np.zeros((np.shape(att_arrs_norm)[1]))
 locations[sig*corr_higher] = 1
 locations[sig*corr_lower] = -1
 
-df['sig_locations'] = locations
+df['sig_loc'] = locations
 
+# in the new filed 'sig_loc' 0 depicts not significant locations, -1 significant location with unfit attribute intesities and, 
+# 1 significant location with similar attribute intesities
 
 '''-------- SAVE THE MODIFIED GEODATAFRAME TO A NEW SHAPEFILE '''
 
 df.to_file(driver = 'ESRI Shapefile', filename= "../result.shp")
+
+
 
