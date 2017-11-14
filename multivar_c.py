@@ -5,7 +5,8 @@ Created on Wed Nov 08 15:44:19 2017
 # Project:  Local Multivariate Geary’s c (Anselin, 2017)
 # Purpose:  Application of the Local Geary c statistic to a multivariate context using vector layers 
 # Author:   Daniele Oxoli (daniele.oxoli@polimi.it)
-# Affiliation: Department of Civil and Environmental Engineering | GEOlab, Politecnico di Milano, P.zza Leonardo da Vinci 32, 20133, Milano, Italy
+# Affiliation: a) Department of Civil and Environmental Engineering | GEOlab, Politecnico di Milano, P.zza Leonardo da Vinci 32, 20133, Milano, Italy
+#              b) Department of Infrastructure Engineering, CSDILA, The University of Melbourne, Melbourne, Vic, Australia
 #
 """
 
@@ -181,8 +182,8 @@ locations[sig*corr_lower] = -1
 
 df['sig_loc'] = locations
 
-# in the new filed 'sig_loc' 0 depicts not significant locations, -1 significant location with unfit attribute intesities and, 
-# 1 significant location with similar attribute intesities
+# in the new filed 'sig_loc' 0 depicts not significant locations, -1 significant location with unfit attribute intensities and, 
+# 1 significant location with similar attribute intensities
 
 '''-------- SAVE THE MODIFIED GEODATAFRAME TO A NEW SHAPEFILE '''
 
