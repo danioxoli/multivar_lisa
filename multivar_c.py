@@ -25,13 +25,11 @@ import seaborn as sns
 '''
 #INPUT DATA 
 '''
-#path = "C:/Users/utente/Desktop/multivar_SA/simple_test_c/grid5_clust.shp"
-#
-#df = gpd.read_file(path)
 
-path = "C:/Users/utente/Desktop/multivar_SA/data_au/vmp_irsd_oecd_sa2_melb.shp"
+in_path = "C:/Users/utente/Desktop/multivar_SA/data_au/vmp_irsd_oecd_sa2_melb.shp"
+out_path = "C:/Users/utente/Desktop/multivar_SA/simple_test_c/result.shp"
 
-df = gpd.read_file(path)
+df = gpd.read_file(in_path)
 
 df.rename(columns={"int_v_avg": "k1", "irsd_f_med": "k2", "oecd_unemp": "k3"},inplace=True)
 
@@ -229,7 +227,7 @@ df['lm3'] = locations
 
 '''-------- SAVE THE MODIFIED GEODATAFRAME TO A NEW SHAPEFILE '''
 
-df.to_file(driver = 'ESRI Shapefile', filename= "C:/Users/utente/Desktop/multivar_SA/simple_test_c/result.shp")
+df.to_file(driver = 'ESRI Shapefile', filename= out_path)
 
 
 '''
