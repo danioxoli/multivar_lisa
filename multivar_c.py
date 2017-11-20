@@ -237,22 +237,25 @@ df.to_file(driver = 'ESRI Shapefile', filename= out_path)
 # plot reference distribution from permutations for the i_th location  
 
 
-i = 98 #location ID
+i = 8 #location ID
 fig, ax = plt.subplots(1, figsize=(10,7))
-sns.kdeplot(C_ki, shade=True, color='g', label='obs. dist. with mean +- std')
+sns.distplot(C_ki, color='g', label='obs. dist. with mean +- std')
 #plt.vlines(C_ki, 0, 0.005, 'r')
 plt.vlines(np.mean(C_ki), 0, 10, 'g')
-plt.vlines(np.mean(C_ki)-np.std(C_ki), 0, 10, 'g','dotted')
-plt.vlines(np.mean(C_ki)+np.std(C_ki), 0, 10, 'g','dotted')
-#plt.xlim([0.0, 20.0])
+#plt.vlines(np.mean(C_ki)-np.std(C_ki), 0, 10, 'g','dotted')
+#plt.vlines(np.mean(C_ki)+np.std(C_ki), 0, 10, 'g','dotted')
+plt.xlim([0.0, 30])
 
-plt.vlines(C_ki[i], 0, 10, 'r', label='obs statistic')
 
-sns.kdeplot(C_ki_perm[i], shade=True, color="c", label='perm. dist. with mean +- std')
+#sns.kdeplot(C_ki_perm[i], shade=True, color="c", label='perm. dist. with mean +- std')
+sns.distplot(C_ki_perm[i], color="c", label='perm. dist. with mean +- std')
 plt.vlines(C_ki_perm[i], 0, 0.005, 'k', label='perm')
 plt.vlines(np.mean(C_ki_perm[i]), 0, 10, 'c')
-plt.vlines(np.mean(C_ki_perm[i])-np.std(C_ki_perm[i]), 0, 10, 'c', 'dashed')
-plt.vlines(np.mean(C_ki_perm[i])+np.std(C_ki_perm[i]), 0, 10, 'c', 'dashed')
+#plt.vlines(np.mean(C_ki_perm[i])-np.std(C_ki_perm[i]), 0, 10, 'c', 'dashed')
+#plt.vlines(np.mean(C_ki_perm[i])+np.std(C_ki_perm[i]), 0, 10, 'c', 'dashed')
+plt.xlim([0.0, 30])
+
+plt.vlines(C_ki[i], 0, 10, 'r', label='obs statistic')
 
 # plot univar cluster, aggrgate sum and multivar significant locations
 
@@ -288,6 +291,50 @@ plt.show()
 
 #simple plot
 #df.plot(column='sig_locations', cmap='RdYlBu_r', edgecolor='black', legend= True, categorical=True,figsize=(10,10))
+
+''' PLOT NEIGHBORS '''
+
+a = w.histogram
+# sort in-place from highest to lowest
+a.sort(key=lambda x: x[1], reverse=True) 
+
+# save the beans and their respective elements separately
+# reverse the tuples to go from most frequent to least frequent 
+
+n_bean = zip(*a)[0]
+score = zip(*a)[1]
+x_pos = np.arange(len(n_bean)) 
+
+plt.bar(n_bean, score, align='center', color = 'r')
+plt.xticks(n_bean) 
+plt.suptitle("Neighbors Distribution", fontsize=16)
+plt.xlabel('n. of neighbours')
+plt.ylabel('n. of precincts')
+plt.show()
+
+# connectivity grapth
+
+from pylab import figure, show
+   
+centroids = np.array([list([poly.x, poly.y]) for poly in df.geometry.centroid])
+
+fig = plt.figure(figsize=(9,9))
+plt.plot(centroids[:,0], centroids[:,1],'.')
+plt.title('Centroids')
+show()
+
+
+fig = figure(figsize=(9,9))
+
+plt.plot(centroids[:,0], centroids[:,1],'.')
+for k,neighs in w.neighbors.items():
+    origin = centroids[k]
+    for neigh in neighs:
+        segment = centroids[[k,neigh]]
+        plt.plot(segment[:,0], segment[:,1], '-')
+plt.title('Queen Neighbor Graph')
+show()
+
 
 
 
