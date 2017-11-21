@@ -21,6 +21,7 @@ import scipy.stats as st
 #plotting libraries
 import matplotlib.pyplot as plt
 import seaborn as sns
+from pylab import figure, show
 
 '''
 #INPUT DATA 
@@ -350,7 +351,6 @@ plt.ylabel('n. of precincts')
 plt.show()
 
 # connectivity grapth
-
    
 centroids = np.array([list([poly.x, poly.y]) for poly in df.geometry.centroid])
 
@@ -358,7 +358,6 @@ fig = plt.figure(figsize=(9,9))
 plt.plot(centroids[:,0], centroids[:,1],'.')
 plt.title('Centroids')
 show()
-
 
 fig = figure(figsize=(9,9))
 
