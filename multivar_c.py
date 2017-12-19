@@ -233,6 +233,97 @@ locations[lm3.q==3 * sig] = -1
 df['lm3'] = locations
 
 
+
+'''-------- TEST BIVARIATE LOCAL MORAN'''
+
+y1 = df['k1']
+x1 = df['k2']
+lmb1 = ps.esda.moran.Moran_Local_BV(x1, y1, w, transformation = weigth_type, permutations = permutations)
+
+sig = lmb1.p_sim <= 0.05
+locations = np.zeros((np.shape(att_arrs_norm)[1]))
+locations[lmb1.q==1 * sig] = 1
+locations[lmb1.q==3 * sig] = -1
+#locations[lm1.q==2 * sig] = -1
+#locations[lm1.q==4 * sig] = -1
+
+df['lmb1'] = locations
+
+#--------------
+
+y2 = df['k1']
+x2 = df['k3']
+lmb2 = ps.esda.moran.Moran_Local_BV(x2, y2, w, transformation = weigth_type, permutations = permutations)
+
+sig = lmb2.p_sim <= 0.05
+locations = np.zeros((np.shape(att_arrs_norm)[1]))
+locations[lmb2.q==1 * sig] = 1
+locations[lmb2.q==3 * sig] = -1
+#locations[lm1.q==2 * sig] = -1
+#locations[lm1.q==4 * sig] = -1
+
+df['lmb2'] = locations
+
+#--------------
+
+y3 = df['k2']
+x3 = df['k3']
+lmb3 = ps.esda.moran.Moran_Local_BV(x3, y3, w, transformation = weigth_type, permutations = permutations)
+
+sig = lmb3.p_sim <= 0.05
+locations = np.zeros((np.shape(att_arrs_norm)[1]))
+locations[lmb3.q==1 * sig] = 1
+locations[lmb3.q==3 * sig] = -1
+#locations[lm1.q==2 * sig] = -1
+#locations[lm1.q==4 * sig] = -1
+
+df['lmb3'] = locations
+
+#--------------
+
+y4 = df['k2']
+x4 = df['k1']
+lmb4 = ps.esda.moran.Moran_Local_BV(x4, y4, w, transformation = weigth_type, permutations = permutations)
+
+sig = lmb4.p_sim <= 0.05
+locations = np.zeros((np.shape(att_arrs_norm)[1]))
+locations[lmb4.q==1 * sig] = 1
+locations[lmb4.q==3 * sig] = -1
+#locations[lm1.q==2 * sig] = -1
+#locations[lm1.q==4 * sig] = -1
+
+df['lmb4'] = locations
+
+#--------------
+
+y5 = df['k3']
+x5 = df['k1']
+lmb5 = ps.esda.moran.Moran_Local_BV(x5, y5, w, transformation = weigth_type, permutations = permutations)
+
+sig = lmb5.p_sim <= 0.05
+locations = np.zeros((np.shape(att_arrs_norm)[1]))
+locations[lmb5.q==1 * sig] = 1
+locations[lmb5.q==3 * sig] = -1
+#locations[lm1.q==2 * sig] = -1
+#locations[lm1.q==4 * sig] = -1
+
+df['lmb5'] = locations
+
+#--------------
+
+y6 = df['k3']
+x6 = df['k2']
+lmb6 = ps.esda.moran.Moran_Local_BV(x6, y6, w, transformation = weigth_type, permutations = permutations)
+
+sig = lmb6.p_sim <= 0.05
+locations = np.zeros((np.shape(att_arrs_norm)[1]))
+locations[lmb6.q==1 * sig] = 1
+locations[lmb6.q==3 * sig] = -1
+#locations[lm1.q==2 * sig] = -1
+#locations[lm1.q==4 * sig] = -1
+
+df['lmb6'] = locations
+
 '''-------- SAVE THE MODIFIED GEODATAFRAME TO A NEW SHAPEFILE '''
 
 df.to_file(driver = 'ESRI Shapefile', filename= out_path)
@@ -277,7 +368,7 @@ plt.xlim([0.0, 30])
 
 plt.vlines(C_ki[i], 0, 10, 'r', label='obs statistic')
 
-# plot univar cluster and multivar significant locations
+# plot univar and bivar cluster and multivar significant locations
 
 fig, axes = plt.subplots(nrows=1, ncols=3, sharey=True, figsize=(21,7))
 df.plot(column='lm1', cmap = 'bwr', edgecolor='black', legend= True, categorical=True, ax=axes[0])
@@ -296,6 +387,24 @@ axes[2].set_title("OECD", fontstyle='italic')
 #axes[0].set_title("VAMPIRE", fontstyle='italic')
 #axes[1].set_title("IRSD", fontstyle='italic')
 #axes[2].set_title("OECD", fontstyle='italic')
+
+fig, axes = plt.subplots(nrows=1, ncols=3, sharey=True, figsize=(21,7))
+df.plot(column='lmb1', cmap = 'RdYlBu_r', edgecolor='black', legend= True, categorical=True, ax=axes[0])
+df.plot(column='lmb2', cmap='RdYlBu_r', edgecolor='black', legend= True, categorical=True, ax=axes[1])
+df.plot(column='lmb3', cmap='RdYlBu_r', edgecolor='black', legend= True, categorical=True, ax=axes[2])
+fig.suptitle("LOCAL MORAN BIVARIATE MAPS", fontsize=16)
+axes[0].set_title("VAMPIRE vs IRSD", fontstyle='italic')
+axes[1].set_title("VAMPIRE vs OECD", fontstyle='italic')
+axes[2].set_title("IRSD vs OECD", fontstyle='italic')
+
+fig, axes = plt.subplots(nrows=1, ncols=3, sharey=True, figsize=(21,7))
+df.plot(column='lmb4', cmap = 'RdYlBu_r', edgecolor='black', legend= True, categorical=True, ax=axes[0])
+df.plot(column='lmb5', cmap='RdYlBu_r', edgecolor='black', legend= True, categorical=True, ax=axes[1])
+df.plot(column='lmb6', cmap='RdYlBu_r', edgecolor='black', legend= True, categorical=True, ax=axes[2])
+fig.suptitle("LOCAL MORAN BIVARIATE MAPS", fontsize=16)
+axes[0].set_title("IRSD vs VAMPIRE", fontstyle='italic')
+axes[1].set_title("OECD vs VAMPIRE", fontstyle='italic')
+axes[2].set_title("OECD vs IRSD", fontstyle='italic')
 
 
 #simplest plot
