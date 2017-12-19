@@ -203,6 +203,8 @@ sig = lm1.p_sim <= 0.05
 locations = np.zeros((np.shape(att_arrs_norm)[1]))
 locations[lm1.q==1 * sig] = 1
 locations[lm1.q==3 * sig] = -1
+#locations[lm1.q==2 * sig] = 2
+#locations[lm1.q==4 * sig] = -2
 
 df['lm1'] = locations
 
@@ -216,6 +218,8 @@ sig = lm2.p_sim <= 0.05
 locations = np.zeros((np.shape(att_arrs_norm)[1]))
 locations[lm2.q==1 * sig] = 1
 locations[lm2.q==3 * sig] = -1
+#locations[lm2.q==2 * sig] = 2
+#locations[lm2.q==4 * sig] = -2
 
 df['lm2'] = locations
 
@@ -229,6 +233,8 @@ sig = lm3.p_sim <= 0.05
 locations = np.zeros((np.shape(att_arrs_norm)[1]))
 locations[lm3.q==1 * sig] = 1
 locations[lm3.q==3 * sig] = -1
+#locations[lm3.q==2 * sig] = 2
+#locations[lm31.q==4 * sig] = -2
 
 df['lm3'] = locations
 
@@ -244,8 +250,8 @@ sig = lmb1.p_sim <= 0.05
 locations = np.zeros((np.shape(att_arrs_norm)[1]))
 locations[lmb1.q==1 * sig] = 1
 locations[lmb1.q==3 * sig] = -1
-#locations[lm1.q==2 * sig] = -1
-#locations[lm1.q==4 * sig] = -1
+#locations[lmb1.q==2 * sig] = 2
+#locations[lmb1.q==4 * sig] = -2
 
 df['lmb1'] = locations
 
@@ -259,8 +265,8 @@ sig = lmb2.p_sim <= 0.05
 locations = np.zeros((np.shape(att_arrs_norm)[1]))
 locations[lmb2.q==1 * sig] = 1
 locations[lmb2.q==3 * sig] = -1
-#locations[lm1.q==2 * sig] = -1
-#locations[lm1.q==4 * sig] = -1
+#locations[lmb2.q==2 * sig] = 2
+#locations[lmb2.q==4 * sig] = -2
 
 df['lmb2'] = locations
 
@@ -274,8 +280,8 @@ sig = lmb3.p_sim <= 0.05
 locations = np.zeros((np.shape(att_arrs_norm)[1]))
 locations[lmb3.q==1 * sig] = 1
 locations[lmb3.q==3 * sig] = -1
-#locations[lm1.q==2 * sig] = -1
-#locations[lm1.q==4 * sig] = -1
+#locations[lmb3.q==2 * sig] = 2
+#locations[lmb3.q==4 * sig] = -2
 
 df['lmb3'] = locations
 
@@ -289,8 +295,8 @@ sig = lmb4.p_sim <= 0.05
 locations = np.zeros((np.shape(att_arrs_norm)[1]))
 locations[lmb4.q==1 * sig] = 1
 locations[lmb4.q==3 * sig] = -1
-#locations[lm1.q==2 * sig] = -1
-#locations[lm1.q==4 * sig] = -1
+#locations[lmb4.q==2 * sig] = 2
+#locations[lmb4.q==4 * sig] = -2
 
 df['lmb4'] = locations
 
@@ -304,8 +310,8 @@ sig = lmb5.p_sim <= 0.05
 locations = np.zeros((np.shape(att_arrs_norm)[1]))
 locations[lmb5.q==1 * sig] = 1
 locations[lmb5.q==3 * sig] = -1
-#locations[lm1.q==2 * sig] = -1
-#locations[lm1.q==4 * sig] = -1
+#locations[lmb5.q==2 * sig] = 2
+#locations[lmb5.q==4 * sig] = -2
 
 df['lmb5'] = locations
 
@@ -319,8 +325,8 @@ sig = lmb6.p_sim <= 0.05
 locations = np.zeros((np.shape(att_arrs_norm)[1]))
 locations[lmb6.q==1 * sig] = 1
 locations[lmb6.q==3 * sig] = -1
-#locations[lm1.q==2 * sig] = -1
-#locations[lm1.q==4 * sig] = -1
+#locations[lmb6.q==2 * sig] = 2
+#locations[lmb6.q==4 * sig] = -2
 
 df['lmb6'] = locations
 
@@ -370,6 +376,7 @@ plt.vlines(C_ki[i], 0, 10, 'r', label='obs statistic')
 
 # plot univar and bivar cluster and multivar significant locations
 
+# local moran
 fig, axes = plt.subplots(nrows=1, ncols=3, sharey=True, figsize=(21,7))
 df.plot(column='lm1', cmap = 'bwr', edgecolor='black', legend= True, categorical=True, ax=axes[0])
 df.plot(column='lm2', cmap='bwr', edgecolor='black', legend= True, categorical=True, ax=axes[1])
@@ -379,15 +386,7 @@ axes[0].set_title("VAMPIRE", fontstyle='italic')
 axes[1].set_title("IRSD", fontstyle='italic')
 axes[2].set_title("OECD", fontstyle='italic')
 
-#fig, axes = plt.subplots(nrows=1, ncols=3, sharey=True, figsize=(21,7))
-#df.plot(column='lg1', cmap = 'bwr', edgecolor='black', legend= True, categorical=True, ax=axes[0])
-#df.plot(column='lg2', cmap='bwr', edgecolor='black', legend= True, categorical=True, ax=axes[1])
-#df.plot(column='lg3', cmap='bwr', edgecolor='black', legend= True, categorical=True, ax=axes[2])
-#fig.suptitle("LOCAL Gi* MAPS", fontsize=16)
-#axes[0].set_title("VAMPIRE", fontstyle='italic')
-#axes[1].set_title("IRSD", fontstyle='italic')
-#axes[2].set_title("OECD", fontstyle='italic')
-
+# local moran bivariate
 fig, axes = plt.subplots(nrows=1, ncols=3, sharey=True, figsize=(21,7))
 df.plot(column='lmb1', cmap = 'RdYlBu_r', edgecolor='black', legend= True, categorical=True, ax=axes[0])
 df.plot(column='lmb2', cmap='RdYlBu_r', edgecolor='black', legend= True, categorical=True, ax=axes[1])
@@ -407,6 +406,8 @@ axes[1].set_title("OECD vs VAMPIRE", fontstyle='italic')
 axes[2].set_title("OECD vs IRSD", fontstyle='italic')
 
 
+# bivariate geary's c
+
 #simplest plot
 #df.plot(column='sig_locations', cmap='RdYlBu_r', edgecolor='black', legend= True, categorical=True,figsize=(10,10))
 
@@ -415,6 +416,8 @@ ax = df.plot(column='sig_loc', cmap='RdYlBu_r', edgecolor='black', legend= True,
 fig.suptitle("MULTIVARIATE SPATIAL ASSOCIATION - GEARY'S C",fontsize=16)
 ax.set_title("VAMPIRE - IRSD - OECD" , fontstyle='italic')
 plt.show()
+
+# plot interesting location count and names
 
 print ('not significant locations = ' +str(sum(df['sig_loc'] == 0)))
 print ('significant locations of high values = ' + str(sum(df['sig_loc'] == 1)))
@@ -429,6 +432,8 @@ for i in range(0,len(df)):
     if df['sig_loc'][i] == 1:
         list_pos_autocorr.append(df['sa2_name'][i])
         
+
+# plot pseudo p-values and computed z-score maps
 
 fig, axes = plt.subplots(nrows=1, ncols=2, figsize=(14,7))
 df.plot(column='z_norm', cmap='OrRd_r', scheme='quantiles', k=5, edgecolor='black', legend= True,  ax=axes[0])
@@ -459,7 +464,7 @@ plt.xlabel('n. of neighbours')
 plt.ylabel('n. of precincts')
 plt.show()
 
-# connectivity grapth
+# plot connectivity grapth
    
 centroids = np.array([list([poly.x, poly.y]) for poly in df.geometry.centroid])
 
