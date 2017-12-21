@@ -57,6 +57,7 @@ weigth_type = 'r' # 'o' = original binary, 'r' = row-stand.
 
 permutations = 999 # number of random permutations
 
+significance = 0.01
 
 '''
 #SPATIAL WEIGHTS AND ATTRIBUTE MATRICES EXTRACTION
@@ -179,7 +180,7 @@ df['z_norm'] = C_ki_z_norm
 
 # define locations of interest in the dataset and add flags 
 
-sig = p_sim <= 0.05
+sig = p_sim <= (significance/3)
 
 corr_lower =  C_ki >= np.mean(C_ki)
 
@@ -195,12 +196,11 @@ df['sig_loc'] = locations
 
 
 '''-------- TEST UNIVARIATE LOCAL MORAN'S I '''
-sig = p_sim <= 0.05
 
 y1 = df['k1']
 lm1 = ps.Moran_Local(y1, w, transformation = weigth_type, permutations = permutations)
 
-sig = lm1.p_sim <= 0.05
+sig = lm1.p_sim <= significance
 locations = np.zeros((np.shape(att_arrs_norm)[1]))
 locations[lm1.q==1 * sig] = 1
 locations[lm1.q==3 * sig] = 1
@@ -215,7 +215,7 @@ y2 = df['k2']
 lm2 = ps.Moran_Local(y2, w, transformation = weigth_type, permutations = permutations)
 
 
-sig = lm2.p_sim <= 0.05
+sig = lm2.p_sim <= significance
 locations = np.zeros((np.shape(att_arrs_norm)[1]))
 locations[lm2.q==1 * sig] = 1
 locations[lm2.q==3 * sig] = 1
@@ -229,7 +229,7 @@ y3 = df['k3']
 lm3 = ps.Moran_Local(y3, w, transformation = weigth_type, permutations = permutations)
 
 
-sig = lm3.p_sim <= 0.05
+sig = lm3.p_sim <= significance
 locations = np.zeros((np.shape(att_arrs_norm)[1]))
 locations[lm3.q==1 * sig] = 1
 locations[lm3.q==3 * sig] = 1
@@ -241,13 +241,12 @@ df['lm3'] = locations
 
 
 '''-------- TEST BIVARIATE LOCAL MORAN'''
-sig = p_sim <= 0.05
 
 y1 = df['k1']
 x1 = df['k2']
 lmb1 = ps.esda.moran.Moran_Local_BV(x1, y1, w, transformation = weigth_type, permutations = permutations)
 
-sig = lmb1.p_sim <= 0.05
+sig = lmb1.p_sim <= (significance/2)
 locations = np.zeros((np.shape(att_arrs_norm)[1]))
 locations[lmb1.q==1 * sig] = 1
 locations[lmb1.q==3 * sig] = 1
@@ -262,7 +261,7 @@ y2 = df['k1']
 x2 = df['k3']
 lmb2 = ps.esda.moran.Moran_Local_BV(x2, y2, w, transformation = weigth_type, permutations = permutations)
 
-sig = lmb2.p_sim <= 0.05
+sig = lmb2.p_sim <= (significance/2)
 locations = np.zeros((np.shape(att_arrs_norm)[1]))
 locations[lmb2.q==1 * sig] = 1
 locations[lmb2.q==3 * sig] = 1
@@ -277,7 +276,7 @@ y3 = df['k2']
 x3 = df['k3']
 lmb3 = ps.esda.moran.Moran_Local_BV(x3, y3, w, transformation = weigth_type, permutations = permutations)
 
-sig = lmb3.p_sim <= 0.05
+sig = lmb3.p_sim <= (significance/2)
 locations = np.zeros((np.shape(att_arrs_norm)[1]))
 locations[lmb3.q==1 * sig] = 1
 locations[lmb3.q==3 * sig] = 1
@@ -292,7 +291,7 @@ y4 = df['k2']
 x4 = df['k1']
 lmb4 = ps.esda.moran.Moran_Local_BV(x4, y4, w, transformation = weigth_type, permutations = permutations)
 
-sig = lmb4.p_sim <= 0.05
+sig = lmb4.p_sim <= (significance/2)
 locations = np.zeros((np.shape(att_arrs_norm)[1]))
 locations[lmb4.q==1 * sig] = 1
 locations[lmb4.q==3 * sig] = 1
@@ -307,7 +306,7 @@ y5 = df['k3']
 x5 = df['k1']
 lmb5 = ps.esda.moran.Moran_Local_BV(x5, y5, w, transformation = weigth_type, permutations = permutations)
 
-sig = lmb5.p_sim <= 0.05
+sig = lmb5.p_sim <= (significance/2)
 locations = np.zeros((np.shape(att_arrs_norm)[1]))
 locations[lmb5.q==1 * sig] = 1
 locations[lmb5.q==3 * sig] = 1
@@ -322,7 +321,7 @@ y6 = df['k3']
 x6 = df['k2']
 lmb6 = ps.esda.moran.Moran_Local_BV(x6, y6, w, transformation = weigth_type, permutations = permutations)
 
-sig = lmb6.p_sim <= 0.05
+sig = lmb6.p_sim <= (significance/2)
 locations = np.zeros((np.shape(att_arrs_norm)[1]))
 locations[lmb6.q==1 * sig] = 1
 locations[lmb6.q==3 * sig] = 1
@@ -359,21 +358,21 @@ i = 51 #location ID
 fig, ax = plt.subplots(1, figsize=(10,7))
 sns.distplot(C_ki, color='g', label='obs. dist. with mean +- std')
 #plt.vlines(C_ki, 0, 0.005, 'r')
-plt.vlines(np.mean(C_ki), 0, 10, 'g')
+plt.xlim([0.0, 30])
+plt.vlines(np.mean(C_ki), 0, 0.6, 'g')
 #plt.vlines(np.mean(C_ki)-np.std(C_ki), 0, 10, 'g','dotted')
 #plt.vlines(np.mean(C_ki)+np.std(C_ki), 0, 10, 'g','dotted')
-plt.xlim([0.0, 30])
+
 
 #sns.kdeplot(C_ki_perm[i], shade=True, color="c", label='perm. dist. with mean +- std')
 sns.distplot(C_ki_perm[i], color="c", label='perm. dist. with mean +- std')
 plt.vlines(C_ki_perm[i], 0, 0.005, 'k', label='perm')
-plt.vlines(np.mean(C_ki_perm[i]), 0, 10, 'c')
+#plt.vlines(np.mean(C_ki_perm[i]), 0, 0.8, 'c')
 #plt.vlines(np.mean(C_ki_perm[i])-np.std(C_ki_perm[i]), 0, 10, 'c', 'dashed')
 #plt.vlines(np.mean(C_ki_perm[i])+np.std(C_ki_perm[i]), 0, 10, 'c', 'dashed')
 plt.xlim([0.0, 30])
 
-
-plt.vlines(C_ki[i], 0, 10, 'r', label='obs statistic')
+plt.vlines(C_ki[i], 0, 0.8, 'r', label='obs statistic')
 
 # plot univar and bivar cluster and multivar significant locations
 
@@ -389,18 +388,18 @@ axes[2].set_title("OECD", fontstyle='italic')
 
 # local moran bivariate
 fig, axes = plt.subplots(nrows=1, ncols=3, sharey=True, figsize=(21,7))
-df.plot(column='lmb1', cmap = 'RdYlBu_r', edgecolor='black', legend= True, categorical=True, ax=axes[0])
-df.plot(column='lmb2', cmap='RdYlBu_r', edgecolor='black', legend= True, categorical=True, ax=axes[1])
-df.plot(column='lmb3', cmap='RdYlBu_r', edgecolor='black', legend= True, categorical=True, ax=axes[2])
+df.plot(column='lmb1', cmap = 'bwr', edgecolor='black', legend= True, categorical=True, ax=axes[0])
+df.plot(column='lmb2', cmap= 'bwr', edgecolor='black', legend= True, categorical=True, ax=axes[1])
+df.plot(column='lmb3', cmap= 'bwr', edgecolor='black', legend= True, categorical=True, ax=axes[2])
 fig.suptitle("LOCAL MORAN BIVARIATE MAPS", fontsize=16)
 axes[0].set_title("VAMPIRE vs IRSD", fontstyle='italic')
 axes[1].set_title("VAMPIRE vs OECD", fontstyle='italic')
 axes[2].set_title("IRSD vs OECD", fontstyle='italic')
 
 fig, axes = plt.subplots(nrows=1, ncols=3, sharey=True, figsize=(21,7))
-df.plot(column='lmb4', cmap = 'RdYlBu_r', edgecolor='black', legend= True, categorical=True, ax=axes[0])
-df.plot(column='lmb5', cmap='RdYlBu_r', edgecolor='black', legend= True, categorical=True, ax=axes[1])
-df.plot(column='lmb6', cmap='RdYlBu_r', edgecolor='black', legend= True, categorical=True, ax=axes[2])
+df.plot(column='lmb4', cmap = 'bwr', edgecolor='black', legend= True, categorical=True, ax=axes[0])
+df.plot(column='lmb5', cmap='bwr', edgecolor='black', legend= True, categorical=True, ax=axes[1])
+df.plot(column='lmb6', cmap='bwr', edgecolor='black', legend= True, categorical=True, ax=axes[2])
 fig.suptitle("LOCAL MORAN BIVARIATE MAPS", fontsize=16)
 axes[0].set_title("IRSD vs VAMPIRE", fontstyle='italic')
 axes[1].set_title("OECD vs VAMPIRE", fontstyle='italic')
@@ -412,8 +411,8 @@ axes[2].set_title("OECD vs IRSD", fontstyle='italic')
 #simplest plot
 #df.plot(column='sig_locations', cmap='RdYlBu_r', edgecolor='black', legend= True, categorical=True,figsize=(10,10))
 
-fig, ax = plt.subplots(1, figsize=(10,10))
-ax = df.plot(column='sig_loc', cmap='RdYlBu_r', edgecolor='black', legend= True, categorical=True, axes=ax)
+fig, ax = plt.subplots(1, figsize=(8,10))
+ax = df.plot(column='sig_loc', cmap='bwr', edgecolor='black', legend= True, categorical=True, axes=ax)
 fig.suptitle("MULTIVARIATE SPATIAL ASSOCIATION - GEARY'S C",fontsize=16)
 ax.set_title("VAMPIRE - IRSD - OECD" , fontstyle='italic')
 plt.show()
@@ -484,7 +483,6 @@ for k,neighs in w.neighbors.items():
         plt.plot(segment[:,0], segment[:,1], '-')
 plt.title('Queen Neighbor Graph')
 show()
-
 
 
 
