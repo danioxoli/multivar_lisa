@@ -195,6 +195,7 @@ df['sig_loc'] = locations
 
 
 '''-------- TEST UNIVARIATE LOCAL MORAN'S I '''
+sig = p_sim <= 0.05
 
 y1 = df['k1']
 lm1 = ps.Moran_Local(y1, w, transformation = weigth_type, permutations = permutations)
@@ -202,9 +203,9 @@ lm1 = ps.Moran_Local(y1, w, transformation = weigth_type, permutations = permuta
 sig = lm1.p_sim <= 0.05
 locations = np.zeros((np.shape(att_arrs_norm)[1]))
 locations[lm1.q==1 * sig] = 1
-locations[lm1.q==3 * sig] = -1
-#locations[lm1.q==2 * sig] = 2
-#locations[lm1.q==4 * sig] = -2
+locations[lm1.q==3 * sig] = 1
+locations[lm1.q==2 * sig] = -1
+locations[lm1.q==4 * sig] = -1
 
 df['lm1'] = locations
 
@@ -217,10 +218,9 @@ lm2 = ps.Moran_Local(y2, w, transformation = weigth_type, permutations = permuta
 sig = lm2.p_sim <= 0.05
 locations = np.zeros((np.shape(att_arrs_norm)[1]))
 locations[lm2.q==1 * sig] = 1
-locations[lm2.q==3 * sig] = -1
-#locations[lm2.q==2 * sig] = 2
-#locations[lm2.q==4 * sig] = -2
-
+locations[lm2.q==3 * sig] = 1
+locations[lm2.q==2 * sig] = -1
+locations[lm2.q==4 * sig] = -1
 df['lm2'] = locations
 
 #--------------
@@ -232,15 +232,16 @@ lm3 = ps.Moran_Local(y3, w, transformation = weigth_type, permutations = permuta
 sig = lm3.p_sim <= 0.05
 locations = np.zeros((np.shape(att_arrs_norm)[1]))
 locations[lm3.q==1 * sig] = 1
-locations[lm3.q==3 * sig] = -1
-#locations[lm3.q==2 * sig] = 2
-#locations[lm31.q==4 * sig] = -2
+locations[lm3.q==3 * sig] = 1
+locations[lm3.q==2 * sig] = -1
+locations[lm3.q==4 * sig] = -1
 
 df['lm3'] = locations
 
 
 
 '''-------- TEST BIVARIATE LOCAL MORAN'''
+sig = p_sim <= 0.05
 
 y1 = df['k1']
 x1 = df['k2']
@@ -249,9 +250,9 @@ lmb1 = ps.esda.moran.Moran_Local_BV(x1, y1, w, transformation = weigth_type, per
 sig = lmb1.p_sim <= 0.05
 locations = np.zeros((np.shape(att_arrs_norm)[1]))
 locations[lmb1.q==1 * sig] = 1
-locations[lmb1.q==3 * sig] = -1
-#locations[lmb1.q==2 * sig] = 2
-#locations[lmb1.q==4 * sig] = -2
+locations[lmb1.q==3 * sig] = 1
+locations[lmb1.q==2 * sig] = -1
+locations[lmb1.q==4 * sig] = -1
 
 df['lmb1'] = locations
 
@@ -264,9 +265,9 @@ lmb2 = ps.esda.moran.Moran_Local_BV(x2, y2, w, transformation = weigth_type, per
 sig = lmb2.p_sim <= 0.05
 locations = np.zeros((np.shape(att_arrs_norm)[1]))
 locations[lmb2.q==1 * sig] = 1
-locations[lmb2.q==3 * sig] = -1
-#locations[lmb2.q==2 * sig] = 2
-#locations[lmb2.q==4 * sig] = -2
+locations[lmb2.q==3 * sig] = 1
+locations[lmb2.q==2 * sig] = -1
+locations[lmb2.q==4 * sig] = -1
 
 df['lmb2'] = locations
 
@@ -279,9 +280,9 @@ lmb3 = ps.esda.moran.Moran_Local_BV(x3, y3, w, transformation = weigth_type, per
 sig = lmb3.p_sim <= 0.05
 locations = np.zeros((np.shape(att_arrs_norm)[1]))
 locations[lmb3.q==1 * sig] = 1
-locations[lmb3.q==3 * sig] = -1
-#locations[lmb3.q==2 * sig] = 2
-#locations[lmb3.q==4 * sig] = -2
+locations[lmb3.q==3 * sig] = 1
+locations[lmb3.q==2 * sig] = -1
+locations[lmb3.q==4 * sig] = -1
 
 df['lmb3'] = locations
 
@@ -294,9 +295,9 @@ lmb4 = ps.esda.moran.Moran_Local_BV(x4, y4, w, transformation = weigth_type, per
 sig = lmb4.p_sim <= 0.05
 locations = np.zeros((np.shape(att_arrs_norm)[1]))
 locations[lmb4.q==1 * sig] = 1
-locations[lmb4.q==3 * sig] = -1
-#locations[lmb4.q==2 * sig] = 2
-#locations[lmb4.q==4 * sig] = -2
+locations[lmb4.q==3 * sig] = 1
+locations[lmb4.q==2 * sig] = -1
+locations[lmb4.q==4 * sig] = -1
 
 df['lmb4'] = locations
 
@@ -309,9 +310,9 @@ lmb5 = ps.esda.moran.Moran_Local_BV(x5, y5, w, transformation = weigth_type, per
 sig = lmb5.p_sim <= 0.05
 locations = np.zeros((np.shape(att_arrs_norm)[1]))
 locations[lmb5.q==1 * sig] = 1
-locations[lmb5.q==3 * sig] = -1
-#locations[lmb5.q==2 * sig] = 2
-#locations[lmb5.q==4 * sig] = -2
+locations[lmb5.q==3 * sig] = 1
+locations[lmb5.q==2 * sig] = -1
+locations[lmb5.q==4 * sig] = -1
 
 df['lmb5'] = locations
 
@@ -324,9 +325,9 @@ lmb6 = ps.esda.moran.Moran_Local_BV(x6, y6, w, transformation = weigth_type, per
 sig = lmb6.p_sim <= 0.05
 locations = np.zeros((np.shape(att_arrs_norm)[1]))
 locations[lmb6.q==1 * sig] = 1
-locations[lmb6.q==3 * sig] = -1
-#locations[lmb6.q==2 * sig] = 2
-#locations[lmb6.q==4 * sig] = -2
+locations[lmb6.q==3 * sig] = 1
+locations[lmb6.q==2 * sig] = -1
+locations[lmb6.q==4 * sig] = -1
 
 df['lmb6'] = locations
 
