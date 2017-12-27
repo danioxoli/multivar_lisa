@@ -321,7 +321,7 @@ y6 = df['k2']
 x6 = df['k3']
 lmb6 = ps.esda.moran.Moran_Local_BV(x6, y6, w, transformation = weigth_type, permutations = permutations)
 
-sig = lmb6.p_sim <= (significance/2)
+sig = lmb6.p_sim <= significance
 locations = np.zeros((np.shape(att_arrs_norm)[1]))
 locations[lmb6.q==1 * sig] = 1
 locations[lmb6.q==3 * sig] = 1
