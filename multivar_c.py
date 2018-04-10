@@ -78,18 +78,6 @@ df = gpd.read_file(in_path)
 # rename the column of the selected attributes with a short name (here used: 3 attributes)
 df.rename(columns={"attribute 1": "k1", "attribute 2": "k2", "attribute 3": "k3"},inplace=True)
 
-# attributes plot
-
-fig, axes = plt.subplots(nrows=1, ncols=3, sharey=True, figsize=(21,7))
-df.plot(column='k1', cmap='OrRd', scheme='quantiles', k=4, edgecolor='black', legend= True , ax=axes[0])
-df.plot(column='k2', cmap='OrRd', scheme='quantiles', k=4, edgecolor='black', legend= True, ax=axes[1])
-df.plot(column='k3', cmap='OrRd', scheme='quantiles', k=4, edgecolor='black', legend= True, ax=axes[2])
-fig.suptitle('INDICATOR QUANTILES MAPS', fontsize=16)
-axes[0].set_title("VAMPIRE", fontstyle='italic')
-axes[1].set_title("IRSD", fontstyle='italic')
-axes[2].set_title("OECD", fontstyle='italic')
-
-
 '''
 # INPUT PARAMETER
 '''
@@ -279,79 +267,79 @@ df['lm3'] = locations
 # attribute 1 vs 2
 y1 = df['k2']
 x1 = df['k1']
-lmb1 = ps.esda.moran.Moran_Local_BV(x1, y1, w, transformation = weigth_type, permutations = permutations)
+lmb12 = ps.esda.moran.Moran_Local_BV(x1, y1, w, transformation = weigth_type, permutations = permutations)
 
-sig = lmb1.p_sim <= significance
+sig = lmb12.p_sim <= significance
 locations = np.zeros((np.shape(att_arrs_norm)[1]))
-locations[lmb1.q==1 * sig] = 1
-locations[lmb1.q==3 * sig] = 1
-locations[lmb1.q==2 * sig] = -1
-locations[lmb1.q==4 * sig] = -1
+locations[lmb12.q==1 * sig] = 1
+locations[lmb12.q==3 * sig] = 1
+locations[lmb12.q==2 * sig] = -1
+locations[lmb12.q==4 * sig] = -1
 df['lmb12'] = locations
 
 # attribute 1 vs 3
 y2 = df['k3']
 x2 = df['k1']
-lmb2 = ps.esda.moran.Moran_Local_BV(x2, y2, w, transformation = weigth_type, permutations = permutations)
+lmb13 = ps.esda.moran.Moran_Local_BV(x2, y2, w, transformation = weigth_type, permutations = permutations)
 
-sig = lmb2.p_sim <= significance
+sig = lmb13.p_sim <= significance
 locations = np.zeros((np.shape(att_arrs_norm)[1]))
-locations[lmb2.q==1 * sig] = 1
-locations[lmb2.q==3 * sig] = 1
-locations[lmb2.q==2 * sig] = -1
-locations[lmb2.q==4 * sig] = -1
+locations[lmb13.q==1 * sig] = 1
+locations[lmb13.q==3 * sig] = 1
+locations[lmb13.q==2 * sig] = -1
+locations[lmb13.q==4 * sig] = -1
 df['lmb13'] = locations
 
 # attribute 2 vs 3
 y3 = df['k3']
 x3 = df['k2']
-lmb3 = ps.esda.moran.Moran_Local_BV(x3, y3, w, transformation = weigth_type, permutations = permutations)
+lmb23 = ps.esda.moran.Moran_Local_BV(x3, y3, w, transformation = weigth_type, permutations = permutations)
 
-sig = lmb3.p_sim <= significance
+sig = lmb23.p_sim <= significance
 locations = np.zeros((np.shape(att_arrs_norm)[1]))
-locations[lmb3.q==1 * sig] = 1
-locations[lmb3.q==3 * sig] = 1
-locations[lmb3.q==2 * sig] = -1
-locations[lmb3.q==4 * sig] = -1
+locations[lmb23.q==1 * sig] = 1
+locations[lmb23.q==3 * sig] = 1
+locations[lmb23.q==2 * sig] = -1
+locations[lmb23.q==4 * sig] = -1
 df['lmb23'] = locations
 
 # attribute 2 vs 1
 y4 = df['k1']
 x4 = df['k2']
-lmb4 = ps.esda.moran.Moran_Local_BV(x4, y4, w, transformation = weigth_type, permutations = permutations)
+lmb21 = ps.esda.moran.Moran_Local_BV(x4, y4, w, transformation = weigth_type, permutations = permutations)
 
-sig = lmb4.p_sim <= significance
+sig = lmb21.p_sim <= significance
 locations = np.zeros((np.shape(att_arrs_norm)[1]))
-locations[lmb4.q==1 * sig] = 1
-locations[lmb4.q==3 * sig] = 1
-locations[lmb4.q==2 * sig] = -1
-locations[lmb4.q==4 * sig] = -1
+locations[lmb21.q==1 * sig] = 1
+locations[lmb21.q==3 * sig] = 1
+locations[lmb21.q==2 * sig] = -1
+locations[lmb21.q==4 * sig] = -1
 df['lmb21'] = locations
 
 # attribute 3 vs 1
 y5 = df['k1']
 x5 = df['k3']
-lmb5 = ps.esda.moran.Moran_Local_BV(x5, y5, w, transformation = weigth_type, permutations = permutations)
+lmb31 = ps.esda.moran.Moran_Local_BV(x5, y5, w, transformation = weigth_type, permutations = permutations)
 
-sig = lmb5.p_sim <= significance
+sig = lmb31.p_sim <= significance
 locations = np.zeros((np.shape(att_arrs_norm)[1]))
-locations[lmb5.q==1 * sig] = 1
-locations[lmb5.q==3 * sig] = 1
-locations[lmb5.q==2 * sig] = -1
-locations[lmb5.q==4 * sig] = -1
+locations[lmb31.q==1 * sig] = 1
+locations[lmb31.q==3 * sig] = 1
+locations[lmb31.q==2 * sig] = -1
+locations[lmb31.q==4 * sig] = -1
 df['lmb31'] = locations 
 
 # attribute 3 vs 2
 y6 = df['k2']
 x6 = df['k3']
-lmb6 = ps.esda.moran.Moran_Local_BV(x6, y6, w, transformation = weigth_type, permutations = permutations)
+lmb32 = ps.esda.moran.Moran_Local_BV(x6, y6, w, transformation = weigth_type, permutations = permutations)
 
-sig = lmb6.p_sim <= significance
+sig = lmb32.p_sim <= significance
 locations = np.zeros((np.shape(att_arrs_norm)[1]))
-locations[lmb6.q==1 * sig] = 1
-locations[lmb6.q==3 * sig] = 1
-locations[lmb6.q==2 * sig] = -1
-locations[lmb6.q==4 * sig] = -1
+locations[lmb32.q==1 * sig] = 1
+locations[lmb32.q==3 * sig] = 1
+locations[lmb32.q==2 * sig] = -1
+locations[lmb32.q==4 * sig] = -1
 df['lmb32'] = locations
 
 ''' 
@@ -377,9 +365,11 @@ axes[0].set_title("VAMPIRE", fontstyle='italic')
 axes[1].set_title("IRSD", fontstyle='italic')
 axes[2].set_title("OECD", fontstyle='italic')
 
+
 # plot reference distribution from permutations for the i_th location  
 
 i = 51 #location ID
+
 fig, ax = plt.subplots(1, figsize=(10,7))
 sns.distplot(C_ki, color='g', label='obs. dist. with mean +- std')
 #plt.vlines(C_ki, 0, 0.005, 'r')
@@ -413,9 +403,9 @@ axes[2].set_title("OECD", fontstyle='italic')
 
 # local moran bivariate
 fig, axes = plt.subplots(nrows=1, ncols=3, sharey=True, figsize=(21,7))
-df.plot(column='lmb1', cmap = 'bwr', edgecolor='black', legend= True, categorical=True, ax=axes[0])
-df.plot(column='lmb2', cmap= 'bwr', edgecolor='black', legend= True, categorical=True, ax=axes[1])
-df.plot(column='lmb3', cmap= 'bwr', edgecolor='black', legend= True, categorical=True, ax=axes[2])
+df.plot(column='lmb12', cmap = 'bwr', edgecolor='black', legend= True, categorical=True, ax=axes[0])
+df.plot(column='lmb13', cmap= 'bwr', edgecolor='black', legend= True, categorical=True, ax=axes[1])
+df.plot(column='lmb23', cmap= 'bwr', edgecolor='black', legend= True, categorical=True, ax=axes[2])
 fig.suptitle("LOCAL MORAN BIVARIATE MAPS", fontsize=16)
 axes[0].set_title("VAMPIRE vs IRSD", fontstyle='italic')
 axes[1].set_title("VAMPIRE vs OECD", fontstyle='italic')
@@ -423,19 +413,15 @@ axes[2].set_title("IRSD vs OECD", fontstyle='italic')
 
 
 fig, axes = plt.subplots(nrows=1, ncols=3, sharey=True, figsize=(21,7))
-df.plot(column='lmb4', cmap = 'bwr', edgecolor='black', legend= True, categorical=True, ax=axes[0])
-df.plot(column='lmb5', cmap='bwr', edgecolor='black', legend= True, categorical=True, ax=axes[1])
-df.plot(column='lmb6', cmap='bwr', edgecolor='black', legend= True, categorical=True, ax=axes[2])
+df.plot(column='lmb21', cmap = 'bwr', edgecolor='black', legend= True, categorical=True, ax=axes[0])
+df.plot(column='lmb31', cmap='bwr', edgecolor='black', legend= True, categorical=True, ax=axes[1])
+df.plot(column='lmb32', cmap='bwr', edgecolor='black', legend= True, categorical=True, ax=axes[2])
 fig.suptitle("LOCAL MORAN BIVARIATE MAPS", fontsize=16)
 axes[0].set_title("IRSD vs VAMPIRE", fontstyle='italic')
 axes[1].set_title("OECD vs VAMPIRE", fontstyle='italic')
 axes[2].set_title("OECD vs IRSD", fontstyle='italic')
 
 # multivariate geary's c
-
-'''#simplest plot
-df.plot(column='sig_locations', cmap='RdYlBu_r', edgecolor='black', legend= True, categorical=True,figsize=(10,10))'''
-
 fig, ax = plt.subplots(1, figsize=(8,10))
 ax = df.plot(column='sig_loc', cmap='bwr', edgecolor='black', legend= True, categorical=True, axes=ax)
 fig.suptitle("MULTIVARIATE SPATIAL ASSOCIATION - GEARY'S C",fontsize=16)
@@ -443,7 +429,6 @@ ax.set_title("VAMPIRE - IRSD - OECD" , fontstyle='italic')
 plt.show()
 
 # plot interesting location count and names
-
 print ('not significant locations = ' +str(sum(df['sig_loc'] == 0)))
 print ('significant locations of high values = ' + str(sum(df['sig_loc'] == 1)))
 print ('significant locations of low values= ' + str(sum(df['sig_loc'] == -1)))
@@ -459,7 +444,6 @@ for i in range(0,len(df)):
         
 
 # plot pseudo p-values and computed z-score maps
-
 fig, axes = plt.subplots(nrows=1, ncols=2, figsize=(14,7))
 df.plot(column='z_norm', cmap='OrRd_r', scheme='quantiles', k=5, edgecolor='black', legend= True,  ax=axes[0])
 df.plot(column='p_sim', cmap='Greys_r', scheme='quantiles', k=5, edgecolor='black', legend= True,  ax=axes[1])
@@ -477,7 +461,6 @@ a.sort(key=lambda x: x[1], reverse=True)
 
 # save the beans and their respective elements separately
 # reverse the tuples to go from most frequent to least frequent 
-
 n_bean = zip(*a)[0]
 score = zip(*a)[1]
 x_pos = np.arange(len(n_bean)) 
@@ -490,7 +473,6 @@ plt.ylabel('n. of precincts')
 plt.show()
 
 # plot connectivity grapth
-   
 centroids = np.array([list([poly.x, poly.y]) for poly in df.geometry.centroid])
 
 fig = plt.figure(figsize=(9,9))
