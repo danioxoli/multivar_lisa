@@ -3,7 +3,7 @@
 Created on Wed Nov 08 15:44:19 2017
 #
 # Project:  Local Multivariate Geary’s c (Anselin, 2017)
-# Purpose:  Application of the Local Geary c statistic to a multivariate context using vector layers 
+# Purpose:  Application of the Local Geary c statistic to a multivariate context using vector layers. Example with 3 variables. 
 # Author:   Daniele Oxoli (daniele.oxoli@polimi.it)
 # Affiliation: Department of Civil and Environmental Engineering | GEOlab, Politecnico di Milano, P.zza Leonardo da Vinci 32, 20133, Milano, Italy
 #
@@ -12,19 +12,62 @@ Created on Wed Nov 08 15:44:19 2017
 '''
 #REQUIRED PACKAGES
 '''
+# data management libraries
+
+import geopandas as gpd
+
+# stats and computing libraries
 
 import pysal as ps
-import geopandas as gpd
 import numpy as np
 import scipy.stats as st
 
-#plotting libraries
+# plotting libraries
+
 import matplotlib.pyplot as plt
 import seaborn as sns
 from pylab import figure, show
 
 '''
-#INPUT DATA 
+# ADDITION FUNCTIONS
+'''
+# simulated p-values correction function (Copyright 2017 Francisco Pina Martins <f.pinamartins@gmail.com>)
+
+def multiple_testing_correction(pvalues, correction_type="FDR"):
+    from numpy import array, empty
+    pvalues = array(pvalues)
+    sample_size = pvalues.shape[0]
+    qvalues = empty(sample_size)
+    if correction_type == "Bonferroni":
+        # Bonferroni correction
+        qvalues = sample_size * pvalues
+    elif correction_type == "Bonferroni-Holm":
+        # Bonferroni-Holm correction
+        values = [(pvalue, i) for i, pvalue in enumerate(pvalues)]
+        values.sort()
+        for rank, vals in enumerate(values):
+            pvalue, i = vals
+            qvalues[i] = (sample_size-rank) * pvalue
+    elif correction_type == "FDR":
+        # Benjamini-Hochberg, AKA - FDR test
+        values = [(pvalue, i) for i, pvalue in enumerate(pvalues)]
+        values.sort()
+        values.reverse()
+        new_values = []
+        for i, vals in enumerate(values):
+            rank = sample_size - i
+            pvalue, index = vals
+            new_values.append((sample_size/rank) * pvalue)
+        for i in range(0, int(sample_size)-1):
+            if new_values[i] < new_values[i+1]:
+                new_values[i+1] = new_values[i]
+        for i, vals in enumerate(values):
+            pvalue, index = vals
+            qvalues[index] = new_values[i]
+    return qvalues
+
+'''
+# INPUT DATA 
 '''
 
 in_path = ".../input.shp"
@@ -35,9 +78,7 @@ df = gpd.read_file(in_path)
 # rename the column of the selected attributes with a short name (here used: 3 attributes)
 df.rename(columns={"attribute 1": "k1", "attribute 2": "k2", "attribute 3": "k3"},inplace=True)
 
-#simplest plot
-#df.plot(column='k1', cmap='OrRd', scheme='quantiles', k=4, edgecolor='black', figsize=(7,7), legend= True)
-
+# attributes plot
 
 fig, axes = plt.subplots(nrows=1, ncols=3, sharey=True, figsize=(21,7))
 df.plot(column='k1', cmap='OrRd', scheme='quantiles', k=4, edgecolor='black', legend= True , ax=axes[0])
@@ -50,7 +91,7 @@ axes[2].set_title("OECD", fontstyle='italic')
 
 
 '''
-#INPUT PARAMETER
+# INPUT PARAMETER
 '''
 
 weigth_type = 'r' # 'o' = original binary, 'r' = row-stand.
@@ -59,23 +100,21 @@ permutations = 999 # number of random permutations
 
 significance = 0.01
 
+fdr = True # FDR correction flag 
+
 '''
-#SPATIAL WEIGHTS AND ATTRIBUTE MATRICES EXTRACTION
+# SPATIAL WEIGHTS AND ATTRIBUTE MATRICES EXTRACTION
 '''
 
 w = ps.weights.Queen.from_dataframe(df)
 w.transform= weigth_type
 wf = w.full()[0]
 
-# inverting attributes to give them an equal meaning verse (eg High = good, Low = bad)
+# inverting attributes to give them an equal meaning verse if needed (eg High = good, Low = bad)
+#df['k1']=1/df['k1']
+#df['k2']=1/df['k2']
+#df['k3']=1/df['k3']
 
-#a=1/df['k1']
-#b=1/df['k2']
-#c=1/df['k3']
-#
-#att_arrs_norm = [(a-a.mean())/a.std(),
-#                 (b-b.mean())/b.std(), 
-#                 (c-c.mean())/c.std()]
 
 att_arrs = [df['k1'],df['k2'],df['k3']]
 att_mtx = np.array(att_arrs).transpose()
@@ -86,7 +125,7 @@ att_arrs_norm = [(df['k1']-df['k1'].mean())/df['k1'].std(),
 att_mtx_norm = np.array(att_arrs_norm).transpose()
 
 '''
-#REAL STATISTIC COMPUTATION
+# REAL STATISTIC COMPUTATION
 '''
 
 d_square= np.zeros((np.shape(att_arrs_norm)[1],np.shape(att_arrs_norm)[1]))
@@ -100,24 +139,21 @@ for i in range(0,np.shape(att_arrs_norm)[1]):
         
 C_vi = wf * d_square
 
-C_ki = np.sum(C_vi,axis=0)
-
+C_ki = np.sum(C_vi,axis=0) # real statistics vector
 
 '''
 #INFERENCE UNDER NORMALITY ASSUMPTION
 '''
 
-C_ki_z_norm = (C_ki - np.mean(C_ki))/np.std(C_ki)
+C_ki_z_norm = (C_ki - np.mean(C_ki))/np.std(C_ki) # standard variates from standard normal approximation
 
-p_norm = st.norm.sf(abs(C_ki_z_norm))*2 #twosided
-
+p_norm = st.norm.sf(abs(C_ki_z_norm))*2 #p-values based on standard normal approximation
 
 '''
 # INFERENCE UNDER RANDOMIZATION ASSUMPTION (CONDITIONAL PERMUTATIONS)
 '''
 
 #simulated statistics 
-
 np.random.seed(12345)
 
 C_ki_perm_list = []
@@ -142,16 +178,13 @@ for k in range(0,permutations):
     
 C_ki_perm = np.array(C_ki_perm_list).transpose()
 
+E_C_ki_perm= [np.mean(C_ki_perm[i]) for i in range(0,len(C_ki_perm))] # mean from permutations
 
-E_C_ki_perm= [np.mean(C_ki_perm[i]) for i in range(0,len(C_ki_perm))]
+S_C_ki_perm = [np.std(C_ki_perm[i]) for i in range(0,len(C_ki_perm))] # standard deviation from permutations
 
-S_C_ki_perm = [np.std(C_ki_perm[i]) for i in range(0,len(C_ki_perm))]
+C_ki_z_sim = (C_ki - E_C_ki_perm)/S_C_ki_perm # standard variates from permutations
 
-C_ki_z_sim = (C_ki - E_C_ki_perm)/S_C_ki_perm
-
-# p-values based on standard normal approximation from permutations
-
-p_z_sim = st.norm.sf(abs(C_ki_z_sim))*2 #twosided
+p_z_sim = st.norm.sf(abs(C_ki_z_sim))*2 # p-values based on standard normal approximation from permutations (two-sided)
 
 # simulated p-values based on permutations (one-sided), null: spatial randomness
 
@@ -163,7 +196,13 @@ for i in range(0,np.shape(att_arrs_norm)[1]):
     if (permutations - larger) < larger:
         larger = permutations - larger
     p_sim[i] = ((larger + 1.0) / (permutations + 1.0))
-    
+
+# correction for simulated p-values (FDR)
+
+if fdr == True:
+    p_sim_fdr = multiple_testing_correction(p_sim, correction_type="FDR")
+else:
+    p_sim_fdr = p_sim
     
 '''
 # ADD TO THE ATTRIBUTE TABLE THE COMPUTED STATISTICS
@@ -177,10 +216,9 @@ df['z_sim'] = C_ki_z_sim
 df['p_norm'] = p_norm
 df['z_norm'] = C_ki_z_norm
 
-
 # define locations of interest in the dataset and add flags 
 
-sig = p_sim <= (significance/3)
+sig = p_sim <= significance
 
 corr_lower =  C_ki >= np.mean(C_ki)
 
@@ -192,11 +230,14 @@ locations = np.zeros((np.shape(att_arrs_norm)[1]))
 locations[sig*corr_higher] = 1
 locations[sig*corr_lower] = -1
 
+# add flags column to the dataframe (0 = not significant, -1 = negative association, 1 = positive association)
+
 df['sig_loc'] = locations
 
-
-'''-------- TEST UNIVARIATE LOCAL MORAN'S I '''
-
+'''
+# TEST UNIVARIATE LOCAL MORAN'S I FOR SINGLE ATTRIBUTE
+'''
+# attribute 1
 y1 = df['k1']
 lm1 = ps.Moran_Local(y1, w, transformation = weigth_type, permutations = permutations)
 
@@ -206,14 +247,11 @@ locations[lm1.q==1 * sig] = 1
 locations[lm1.q==3 * sig] = 1
 locations[lm1.q==2 * sig] = -1
 locations[lm1.q==4 * sig] = -1
-
 df['lm1'] = locations
 
-#--------------
-
+# attribute 2
 y2 = df['k2']
 lm2 = ps.Moran_Local(y2, w, transformation = weigth_type, permutations = permutations)
-
 
 sig = lm2.p_sim <= significance
 locations = np.zeros((np.shape(att_arrs_norm)[1]))
@@ -223,11 +261,9 @@ locations[lm2.q==2 * sig] = -1
 locations[lm2.q==4 * sig] = -1
 df['lm2'] = locations
 
-#--------------
-
+# attribute 3
 y3 = df['k3']
 lm3 = ps.Moran_Local(y3, w, transformation = weigth_type, permutations = permutations)
-
 
 sig = lm3.p_sim <= significance
 locations = np.zeros((np.shape(att_arrs_norm)[1]))
@@ -235,13 +271,12 @@ locations[lm3.q==1 * sig] = 1
 locations[lm3.q==3 * sig] = 1
 locations[lm3.q==2 * sig] = -1
 locations[lm3.q==4 * sig] = -1
-
 df['lm3'] = locations
 
-
-
-'''-------- TEST BIVARIATE LOCAL MORAN'''
-
+'''
+# TEST BIVARIATE LOCAL MORAN
+'''
+# attribute 1 vs 2
 y1 = df['k2']
 x1 = df['k1']
 lmb1 = ps.esda.moran.Moran_Local_BV(x1, y1, w, transformation = weigth_type, permutations = permutations)
@@ -252,11 +287,9 @@ locations[lmb1.q==1 * sig] = 1
 locations[lmb1.q==3 * sig] = 1
 locations[lmb1.q==2 * sig] = -1
 locations[lmb1.q==4 * sig] = -1
+df['lmb12'] = locations
 
-df['lmb1'] = locations
-
-#--------------
-
+# attribute 1 vs 3
 y2 = df['k3']
 x2 = df['k1']
 lmb2 = ps.esda.moran.Moran_Local_BV(x2, y2, w, transformation = weigth_type, permutations = permutations)
@@ -267,11 +300,9 @@ locations[lmb2.q==1 * sig] = 1
 locations[lmb2.q==3 * sig] = 1
 locations[lmb2.q==2 * sig] = -1
 locations[lmb2.q==4 * sig] = -1
+df['lmb13'] = locations
 
-df['lmb2'] = locations
-
-#--------------
-
+# attribute 2 vs 3
 y3 = df['k3']
 x3 = df['k2']
 lmb3 = ps.esda.moran.Moran_Local_BV(x3, y3, w, transformation = weigth_type, permutations = permutations)
@@ -282,11 +313,9 @@ locations[lmb3.q==1 * sig] = 1
 locations[lmb3.q==3 * sig] = 1
 locations[lmb3.q==2 * sig] = -1
 locations[lmb3.q==4 * sig] = -1
+df['lmb23'] = locations
 
-df['lmb3'] = locations
-
-#--------------
-
+# attribute 2 vs 1
 y4 = df['k1']
 x4 = df['k2']
 lmb4 = ps.esda.moran.Moran_Local_BV(x4, y4, w, transformation = weigth_type, permutations = permutations)
@@ -297,11 +326,9 @@ locations[lmb4.q==1 * sig] = 1
 locations[lmb4.q==3 * sig] = 1
 locations[lmb4.q==2 * sig] = -1
 locations[lmb4.q==4 * sig] = -1
+df['lmb21'] = locations
 
-df['lmb4'] = locations
-
-#--------------
-
+# attribute 3 vs 1
 y5 = df['k1']
 x5 = df['k3']
 lmb5 = ps.esda.moran.Moran_Local_BV(x5, y5, w, transformation = weigth_type, permutations = permutations)
@@ -312,11 +339,9 @@ locations[lmb5.q==1 * sig] = 1
 locations[lmb5.q==3 * sig] = 1
 locations[lmb5.q==2 * sig] = -1
 locations[lmb5.q==4 * sig] = -1
+df['lmb31'] = locations 
 
-df['lmb5'] = locations
-
-#--------------
-
+# attribute 3 vs 2
 y6 = df['k2']
 x6 = df['k3']
 lmb6 = ps.esda.moran.Moran_Local_BV(x6, y6, w, transformation = weigth_type, permutations = permutations)
@@ -327,13 +352,13 @@ locations[lmb6.q==1 * sig] = 1
 locations[lmb6.q==3 * sig] = 1
 locations[lmb6.q==2 * sig] = -1
 locations[lmb6.q==4 * sig] = -1
+df['lmb32'] = locations
 
-df['lmb6'] = locations
-
-'''-------- SAVE THE MODIFIED GEODATAFRAME TO A NEW SHAPEFILE '''
+''' 
+# SAVE THE MODIFIED GEODATAFRAME TO A NEW SHAPEFILE 
+'''
 
 df.to_file(driver = 'ESRI Shapefile', filename= out_path)
-
 
 '''
 # INTERPRETATION AND PLOT OF INTERESTING LOCATIONS
@@ -406,11 +431,10 @@ axes[0].set_title("IRSD vs VAMPIRE", fontstyle='italic')
 axes[1].set_title("OECD vs VAMPIRE", fontstyle='italic')
 axes[2].set_title("OECD vs IRSD", fontstyle='italic')
 
-# bivariate geary's c
-
 # multivariate geary's c
-#simplest plot
-#df.plot(column='sig_locations', cmap='RdYlBu_r', edgecolor='black', legend= True, categorical=True,figsize=(10,10))
+
+'''#simplest plot
+df.plot(column='sig_locations', cmap='RdYlBu_r', edgecolor='black', legend= True, categorical=True,figsize=(10,10))'''
 
 fig, ax = plt.subplots(1, figsize=(8,10))
 ax = df.plot(column='sig_loc', cmap='bwr', edgecolor='black', legend= True, categorical=True, axes=ax)
