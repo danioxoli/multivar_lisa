@@ -86,9 +86,11 @@ weigth_type = 'r' # 'o' = original binary, 'r' = row-stand.
 
 permutations = 999 # number of random permutations
 
-significance = 0.01
+significance = 0.01 # significance level for hypothesis testing
 
-fdr = True # FDR correction flag 
+fdr_sim = True # FDR correction flag for simulated p-values (set False to not apply the correction)
+fdr_norm = False # FDR correction flag for p-values based on standard normal approximation (set True to apply the correction)
+fdr_sim_norm =  False # FDR correction flag for p-values based on standard normal approximation from permutations (set True to apply the correction)
 
 '''
 # SPATIAL WEIGHTS AND ATTRIBUTE MATRICES EXTRACTION
@@ -127,7 +129,7 @@ for i in range(0,np.shape(att_arrs_norm)[1]):
         
 C_vi = wf * d_square
 
-C_ki = np.sum(C_vi,axis=0) # real statistics vector
+C_ki = np.sum(C_vi,axis=0) # real statistic values vector
 
 '''
 #INFERENCE UNDER NORMALITY ASSUMPTION
@@ -135,13 +137,13 @@ C_ki = np.sum(C_vi,axis=0) # real statistics vector
 
 C_ki_z_norm = (C_ki - np.mean(C_ki))/np.std(C_ki) # standard variates from standard normal approximation
 
-p_norm = st.norm.sf(abs(C_ki_z_norm))*2 #p-values based on standard normal approximation
+p_norm = st.norm.sf(abs(C_ki_z_norm))*2 # p-values based on standard normal approximation
 
 '''
 # INFERENCE UNDER RANDOMIZATION ASSUMPTION (CONDITIONAL PERMUTATIONS)
 '''
 
-#simulated statistics 
+# simulated statistics 
 np.random.seed(12345)
 
 C_ki_perm_list = []
@@ -187,10 +189,24 @@ for i in range(0,np.shape(att_arrs_norm)[1]):
 
 # correction for simulated p-values (FDR)
 
-if fdr == True:
+if fdr_sim == True:
     p_sim_fdr = multiple_testing_correction(p_sim, correction_type="FDR")
 else:
     p_sim_fdr = p_sim
+
+# correction for p-values based on standard normal approximation (FDR)
+
+if fdr_norm == True:
+    p_sim_fdr = multiple_testing_correction(p_norm, correction_type="FDR")
+else:
+    p_norm_fdr = p_norm
+
+# correction for p-values based on standard normal approximation from permutations (FDR)
+
+if fdr_sim_norm == True:
+    p_sim_norm_fdr = multiple_testing_correction(p_z_sim, correction_type="FDR")
+else:
+    p_sim_norm_fdr = p_z_sim
     
 '''
 # ADD TO THE ATTRIBUTE TABLE THE COMPUTED STATISTICS
@@ -199,10 +215,12 @@ df['k1_stand']= (df['k1']-df['k1'].mean())/df['k1'].std()
 df['k2_stand']= (df['k2']-df['k2'].mean())/df['k2'].std()
 df['k3_stand']=  (df['k3']-df['k3'].mean())/df['k3'].std()
 df['C_ki'] = C_ki    
-df['p_sim'] = p_sim
+df['p_sim'] = p_sim_fdr
 df['z_sim'] = C_ki_z_sim
-df['p_norm'] = p_norm
+df['p_norm'] = p_norm_fdr
 df['z_norm'] = C_ki_z_norm
+#df['z_sim_norm'] = C_ki_z_sim
+#df['p_sim_norm'] = p_sim_norm_fdr
 
 # define locations of interest in the dataset and add flags 
 
