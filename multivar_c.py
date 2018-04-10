@@ -105,7 +105,6 @@ wf = w.full()[0]
 #df['k2']=1/df['k2']
 #df['k3']=1/df['k3']
 
-
 att_arrs = [df['k1'],df['k2'],df['k3']]
 att_mtx = np.array(att_arrs).transpose()
 
@@ -229,7 +228,6 @@ sig = p_sim <= significance
 corr_lower =  C_ki >= np.mean(C_ki)
 
 corr_higher = C_ki <np.mean(C_ki)
-
 
 locations = np.zeros((np.shape(att_arrs_norm)[1]))
 
@@ -383,7 +381,6 @@ axes[0].set_title("attribute 1", fontstyle='italic')
 axes[1].set_title("attribute 2", fontstyle='italic')
 axes[2].set_title("attribute 3", fontstyle='italic')
 
-
 # plot reference distribution from permutations for the i_th location  
 
 i = 51 #location ID
@@ -395,7 +392,6 @@ plt.xlim([0.0, 30])
 plt.vlines(np.mean(C_ki), 0, 0.6, 'g')
 #plt.vlines(np.mean(C_ki)-np.std(C_ki), 0, 10, 'g','dotted')
 #plt.vlines(np.mean(C_ki)+np.std(C_ki), 0, 10, 'g','dotted')
-
 
 #sns.kdeplot(C_ki_perm[i], shade=True, color="c", label='perm. dist. with mean +- std')
 sns.distplot(C_ki_perm[i], color="c", label='perm. dist. with mean +- std')
@@ -428,7 +424,6 @@ fig.suptitle("LOCAL MORAN BIVARIATE MAPS", fontsize=16)
 axes[0].set_title("1 vs 2", fontstyle='italic')
 axes[1].set_title("1 vs 3", fontstyle='italic')
 axes[2].set_title("2 vs 3", fontstyle='italic')
-
 
 fig, axes = plt.subplots(nrows=1, ncols=3, sharey=True, figsize=(21,7))
 df.plot(column='lmb21', cmap = 'bwr', edgecolor='black', legend= True, categorical=True, ax=axes[0])
@@ -467,7 +462,6 @@ fig.suptitle("Quntiles  maps - Computed statistics", fontsize=16)
 axes[0].set_title("Computed MULTIVARIATE GEARY'S C z-norm ", fontstyle='italic')
 axes[1].set_title("Pseudo p-values", fontstyle='italic')
 plt.show()
-
 
 ''' PLOT NEIGHBORS '''
 
