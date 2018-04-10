@@ -361,9 +361,9 @@ df.plot(column='k1', cmap='OrRd', scheme='quantiles', k=4, edgecolor='black', le
 df.plot(column='k2', cmap='OrRd', scheme='quantiles', k=4, edgecolor='black', legend= True, ax=axes[1])
 df.plot(column='k3', cmap='OrRd', scheme='quantiles', k=4, edgecolor='black', legend= True, ax=axes[2])
 fig.suptitle('INDICATOR QUANTILES MAPS', fontsize=16)
-axes[0].set_title("VAMPIRE", fontstyle='italic')
-axes[1].set_title("IRSD", fontstyle='italic')
-axes[2].set_title("OECD", fontstyle='italic')
+axes[0].set_title("attribute 1", fontstyle='italic')
+axes[1].set_title("attribute 2", fontstyle='italic')
+axes[2].set_title("attribute 3", fontstyle='italic')
 
 
 # plot reference distribution from permutations for the i_th location  
@@ -397,9 +397,9 @@ df.plot(column='lm1', cmap = 'bwr', edgecolor='black', legend= True, categorical
 df.plot(column='lm2', cmap='bwr', edgecolor='black', legend= True, categorical=True, ax=axes[1])
 df.plot(column='lm3', cmap='bwr', edgecolor='black', legend= True, categorical=True, ax=axes[2])
 fig.suptitle("LOCAL MORAN'I MAPS", fontsize=16)
-axes[0].set_title("VAMPIRE", fontstyle='italic')
-axes[1].set_title("IRSD", fontstyle='italic')
-axes[2].set_title("OECD", fontstyle='italic')
+axes[0].set_title("attribute 1", fontstyle='italic')
+axes[1].set_title("attribute 2", fontstyle='italic')
+axes[2].set_title("attribute 3", fontstyle='italic')
 
 # local moran bivariate
 fig, axes = plt.subplots(nrows=1, ncols=3, sharey=True, figsize=(21,7))
@@ -407,9 +407,9 @@ df.plot(column='lmb12', cmap = 'bwr', edgecolor='black', legend= True, categoric
 df.plot(column='lmb13', cmap= 'bwr', edgecolor='black', legend= True, categorical=True, ax=axes[1])
 df.plot(column='lmb23', cmap= 'bwr', edgecolor='black', legend= True, categorical=True, ax=axes[2])
 fig.suptitle("LOCAL MORAN BIVARIATE MAPS", fontsize=16)
-axes[0].set_title("VAMPIRE vs IRSD", fontstyle='italic')
-axes[1].set_title("VAMPIRE vs OECD", fontstyle='italic')
-axes[2].set_title("IRSD vs OECD", fontstyle='italic')
+axes[0].set_title("1 vs 2", fontstyle='italic')
+axes[1].set_title("1 vs 3", fontstyle='italic')
+axes[2].set_title("2 vs 3", fontstyle='italic')
 
 
 fig, axes = plt.subplots(nrows=1, ncols=3, sharey=True, figsize=(21,7))
@@ -417,22 +417,21 @@ df.plot(column='lmb21', cmap = 'bwr', edgecolor='black', legend= True, categoric
 df.plot(column='lmb31', cmap='bwr', edgecolor='black', legend= True, categorical=True, ax=axes[1])
 df.plot(column='lmb32', cmap='bwr', edgecolor='black', legend= True, categorical=True, ax=axes[2])
 fig.suptitle("LOCAL MORAN BIVARIATE MAPS", fontsize=16)
-axes[0].set_title("IRSD vs VAMPIRE", fontstyle='italic')
-axes[1].set_title("OECD vs VAMPIRE", fontstyle='italic')
-axes[2].set_title("OECD vs IRSD", fontstyle='italic')
+axes[0].set_title("2 vs 1", fontstyle='italic')
+axes[1].set_title("3 vs 1", fontstyle='italic')
+axes[2].set_title("3 vs 2", fontstyle='italic')
 
 # multivariate geary's c
 fig, ax = plt.subplots(1, figsize=(8,10))
 ax = df.plot(column='sig_loc', cmap='bwr', edgecolor='black', legend= True, categorical=True, axes=ax)
 fig.suptitle("MULTIVARIATE SPATIAL ASSOCIATION - GEARY'S C",fontsize=16)
-ax.set_title("VAMPIRE - IRSD - OECD" , fontstyle='italic')
+ax.set_title("1 - 2 - 3" , fontstyle='italic')
 plt.show()
 
 # plot interesting location count and names
 print ('not significant locations = ' +str(sum(df['sig_loc'] == 0)))
 print ('significant locations of high values = ' + str(sum(df['sig_loc'] == 1)))
 print ('significant locations of low values= ' + str(sum(df['sig_loc'] == -1)))
-
 
 list_neg_autocorr = []
 list_pos_autocorr = []
@@ -442,7 +441,6 @@ for i in range(0,len(df)):
     if df['sig_loc'][i] == 1:
         list_pos_autocorr.append(df['sa2_name'][i])
         
-
 # plot pseudo p-values and computed z-score maps
 fig, axes = plt.subplots(nrows=1, ncols=2, figsize=(14,7))
 df.plot(column='z_norm', cmap='OrRd_r', scheme='quantiles', k=5, edgecolor='black', legend= True,  ax=axes[0])
