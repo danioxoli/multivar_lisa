@@ -217,8 +217,8 @@ df['k3_stand']=  (df['k3']-df['k3'].mean())/df['k3'].std()
 df['C_ki'] = C_ki    
 df['p_sim'] = p_sim_fdr
 df['z_sim'] = C_ki_z_sim
-df['p_norm'] = p_norm_fdr
-df['z_norm'] = C_ki_z_norm
+#df['p_norm'] = p_norm_fdr
+#df['z_norm'] = C_ki_z_norm
 #df['z_sim_norm'] = C_ki_z_sim
 #df['p_sim_norm'] = p_sim_norm_fdr
 
