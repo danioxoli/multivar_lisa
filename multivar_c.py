@@ -66,6 +66,9 @@ def multiple_testing_correction(pvalues, correction_type="FDR"):
             qvalues[index] = new_values[i]
     return qvalues
 
+# if you need to check run time
+import time
+
 '''
 # INPUT DATA 
 '''
@@ -87,6 +90,8 @@ weigth_type = 'r' # 'o' = original binary, 'r' = row-stand.
 permutations = 999 # number of random permutations
 
 significance = 0.01 # significance level for hypothesis testing
+
+significance_fdr = 0.03 # significance level for hypothesis testing with FDR
 
 fdr_sim = True # FDR correction flag for simulated p-values (set False to not apply the correction)
 fdr_norm = False # FDR correction flag for p-values based on standard normal approximation (set True to apply the correction)
@@ -149,7 +154,13 @@ C_ki_perm_list = []
 
 for k in range(0,permutations):
     d_square_perm= np.zeros((np.shape(att_arrs_norm)[1],np.shape(att_arrs_norm)[1]))
-    perm_mtx_norm=np.random.permutation(att_mtx_norm)
+# permutation of the single attribute array    
+    perm_att_norm = []
+    for i in range(0,np.shape(att_arrs_norm)[0]):
+        perm_att_norm_i=np.random.permutation(att_arrs_norm[i])
+        perm_att_norm.append(perm_att_norm_i)
+    perm_mtx_norm = np.array(perm_att_norm).transpose()       
+#    perm_mtx_norm=np.random.permutation(att_mtx_norm) # this substitutes lines 158->162 for permutation of the whole matrix 
     for i in range(0,np.shape(att_arrs_norm)[1]):
         for j in range(0,np.shape(att_arrs_norm)[1]):
             if i == j:
@@ -214,7 +225,8 @@ df['k1_stand']= (df['k1']-df['k1'].mean())/df['k1'].std()
 df['k2_stand']= (df['k2']-df['k2'].mean())/df['k2'].std()
 df['k3_stand']=  (df['k3']-df['k3'].mean())/df['k3'].std()
 df['C_ki'] = C_ki    
-df['p_sim'] = p_sim_fdr
+df['p_sim_fdr'] = p_sim_fdr
+df['p_sim'] = p_sim
 df['z_sim'] = C_ki_z_sim
 #df['p_norm'] = p_norm_fdr
 #df['z_norm'] = C_ki_z_norm
@@ -223,7 +235,7 @@ df['z_sim'] = C_ki_z_sim
 
 # define locations of interest in the dataset and add flags 
 
-sig = p_sim <= significance
+sig = p_sim_fdr <= significance_fdr
 
 corr_lower =  C_ki >= np.mean(C_ki)
 
@@ -501,5 +513,7 @@ for k,neighs in w.neighbors.items():
 plt.title('Queen Neighbor Graph')
 show()
 
+runtime = (time.clock() - start_time)/60
+print runtime, "minutes"
 
 
