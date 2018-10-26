@@ -117,30 +117,31 @@ for keys in neigh_sig:
         m2 = []
         
         ax1.scatter(cg1, cg2,
-                label= 'mass centre', s=200, c='indigo', marker="P")  
+                label= 'mass centre', s=180, c='indigo', marker="P")  
         
+#        ax1.scatter(0, 0,
+#                label= 'origin (0,0)', s=80, c='r', marker="o") 
+#        
+#        at1 = AnchoredText(u"\u03D0"+'='+str(round(coeff[0],3))+
+#              ', d='+str(round(d_sum/len(loi),3))+', x_c='
+#              +str(round(cg1,3))+', y_c='+str(round(cg2,3)), 
+#                           prop=dict(size=10), frameon=True, loc=1)
+
         ax1.scatter(0, 0,
-                label= 'origin (0,0)', s=100, c='r', marker="o") 
+                label= 'origin (0,0)', s=80, c='r', marker="o") 
         
-        at1 = AnchoredText(u"\u03D0"+'='+str(round(coeff[0],3))+
-              ', d='+str(round(d_sum/len(loi),3))+', x_c='
-              +str(round(cg1,3))+', y_c='+str(round(cg2,3)), 
+        at1 = AnchoredText('dispersion = '+str(round(d_sum/len(loi),3))
+#        +', p-value (FDR) = '+str(df.loc[keys]['p_sim_fdr'])
+        , 
                            prop=dict(size=10), frameon=True, loc=1)
         at1.patch.set_boxstyle("round,pad=0.,rounding_size=0.2")
-        ax1.add_artist(at1)   
-                
+        ax1.add_artist(at1)               
+        
         plt.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
         plt.xlabel('Principal Component 1')
         plt.ylabel('Principal Component 2')  
         plt.tight_layout()      
         plt.show()
-        
-        if df_reduced.loc[keys]['sig_loc'] == 1:
-            d_list_clust.update({keys: round(d_sum/len(loi),3)})
-        else:
-            d_list_out.update({keys: round(d_sum/len(loi),3)})
-        
         d_sum = 0
-        
-        fig.savefig(g_path+str(df['sa2_name'].loc[keys]))
+        fig.savefig(g_path+title, dpi=300, interpolation='bilinear')
 
