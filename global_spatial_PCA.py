@@ -142,7 +142,7 @@ for keys in neigh_sig:
         d_sum = 0
         fig.savefig(g_path+title, dpi=300, interpolation='bilinear')
         
-
+df_sig_pca["SA2"] = df["SA2_main"]
 df_sig_pca["Di"] = Di
 df_sig_pca.to_file(driver = 'ESRI Shapefile', filename= out2_path)
 
