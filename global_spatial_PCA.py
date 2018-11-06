@@ -17,10 +17,11 @@ import numpy as np
 from sklearn.preprocessing import StandardScaler
 from sklearn.decomposition import PCA as sklearnPCA
 
-# read the output of the "multivar_c.py" module
-out_path = "your_path_to_file"
-g_path = "your_path_to_graph_folder"
 
+# read the output of the "multivar_c.py" module
+out_path = "your_path_to__input_file"
+g_path = "your_path_to_graph_folder"
+out2_path = "your_path_to__output_file"
 
 df = gpd.read_file(out_path)
 
@@ -28,7 +29,7 @@ w = ps.weights.Queen.from_dataframe(df)
 
 neigh = w.neighbors
 
-df_sig = df.loc[df['sig_loc'] != 0]
+df_sig = df
 neigh_sig = { key: neigh[key] for key in list(df_sig.index) }
 
 attribute_to_keep = ['k1','k2','k3','C_ki','p_sim','sig_loc','geometry']
@@ -40,14 +41,13 @@ df_reduced = df[attribute_to_keep]
 N_comps = 2
 
 
-#PCA on all significant locations with graphic output
+#PCA on all locations with graphic output
 
-df_sig_pca = df_reduced.loc[df['sig_loc'] != 0]
+df_sig_pca = df_reduced
 reg_x = []
 reg_y = []
 d_sum = 0
-d_list_clust={}
-d_list_out={}
+Di = []
 m1 = []
 m2 = []
 
@@ -70,9 +70,18 @@ for keys in neigh_sig:
     loi = np.array(neigh_sig[keys])
        
     if df_reduced.loc[keys]['sig_loc'] == 1:
-        color = 'r'
+        facecolor='r'
+        edgecolor='r'
+        title = 'C_'+str(df.loc[keys]['sa2_name'])+'.png'
     else:
-        color = 'b' 
+        facecolor='b'
+        edgecolor='b'
+        title = 'O_'+str(df.loc[keys]['sa2_name'])+'.png'
+    
+    if df_reduced.loc[keys]['sig_loc'] == 0:
+        facecolor='white'
+        edgecolor='k'
+        title = 'N_'+str(df.loc[keys]['sa2_name'])+'.png'
         
     with plt.style.context('seaborn-whitegrid'):
         fig = plt.figure()
@@ -102,14 +111,8 @@ for keys in neigh_sig:
             m2.append(y2)
                           
         ax1.scatter(Y_sklearn_s[y_s == keys, 0], Y_sklearn_s[y_s == keys, 1],
-                label= str(df.loc[keys]['sa2_name']), s=200, c=color, marker="*")
+                label= str(df.loc[keys]['sa2_name']), s=200, marker="*", facecolors=facecolor, edgecolors=edgecolor )
         
-        reg_x.append(Y_sklearn_s[y_s == keys, 0])
-        reg_y.append(Y_sklearn_s[y_s == keys, 1])
-
-        coeff = linregress(np.concatenate(reg_x, axis=0), np.concatenate(reg_y, axis=0))        
-        reg_x = []
-        reg_y = []
 
         cg1 = np.sum(m1)/len(m1)
         cg2 = np.sum(m2)/len(m2)    
@@ -119,18 +122,11 @@ for keys in neigh_sig:
         ax1.scatter(cg1, cg2,
                 label= 'mass centre', s=180, c='indigo', marker="P")  
         
-#        ax1.scatter(0, 0,
-#                label= 'origin (0,0)', s=80, c='r', marker="o") 
-#        
-#        at1 = AnchoredText(u"\u03D0"+'='+str(round(coeff[0],3))+
-#              ', d='+str(round(d_sum/len(loi),3))+', x_c='
-#              +str(round(cg1,3))+', y_c='+str(round(cg2,3)), 
-#                           prop=dict(size=10), frameon=True, loc=1)
 
         ax1.scatter(0, 0,
                 label= 'origin (0,0)', s=80, c='r', marker="o") 
         
-        at1 = AnchoredText('dispersion = '+str(round(d_sum/len(loi),3))
+        at1 = AnchoredText('Di = '+str(round(d_sum/len(loi),3))
 #        +', p-value (FDR) = '+str(df.loc[keys]['p_sim_fdr'])
         , 
                            prop=dict(size=10), frameon=True, loc=1)
@@ -142,6 +138,11 @@ for keys in neigh_sig:
         plt.ylabel('Principal Component 2')  
         plt.tight_layout()      
         plt.show()
+        Di.append(round(d_sum/len(loi),3))
         d_sum = 0
         fig.savefig(g_path+title, dpi=300, interpolation='bilinear')
+        
+
+df_sig_pca["Di"] = Di
+df_sig_pca.to_file(driver = 'ESRI Shapefile', filename= out2_path)
 
