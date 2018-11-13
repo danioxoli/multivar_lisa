@@ -104,18 +104,22 @@ for keys in neigh_sig:
             y1 = Y_sklearn_s[y_s == keys, 1][0]
             x2 = Y_sklearn_s[y_s == l, 0][0]
             y2 = Y_sklearn_s[y_s == l, 1][0]
-            dist = np.sqrt( (x2 - x1)**2 + (y2 - y1)**2 )
-            d_sum += dist
+
                         
             m1.append(x2)
             m2.append(y2)
+        
+        cg1 = np.sum(m1)/len(m1)
+        cg2 = np.sum(m2)/len(m2)
+        
+        #compute the Di    
+        for i in range(0,len(m1)):
+            dist = np.sqrt( (m1[i] - cg1)**2 + (m2[i] - cg2)**2 )
+            d_sum += dist
                           
         ax1.scatter(Y_sklearn_s[y_s == keys, 0], Y_sklearn_s[y_s == keys, 1],
                 label= str(df.loc[keys]['sa2_name']), s=200, marker="*", facecolors=facecolor, edgecolors=edgecolor )
         
-
-        cg1 = np.sum(m1)/len(m1)
-        cg2 = np.sum(m2)/len(m2)    
         m1 = []
         m2 = []
         
