@@ -43,7 +43,7 @@ import time
 start = time.time()
 
 in_path = "/Users/daniele/Google Drive/Delivery&Application/FOSS4GIT_2019/dati/comuni_2012.shp"
-out_path = "/Users/daniele/Google Drive/Delivery&Application/FOSS4GIT_2019/outputs/results.shp"
+out_path = "/Users/daniele/Google Drive/Delivery&Application/FOSS4GIT_2019/outputs/results2.shp"
 
 df = gpd.read_file(in_path)
 
@@ -58,7 +58,7 @@ df.rename(columns=attributes_dic,inplace=True)
 # invert attributes value to meet comparable attributes semantics
 #df['inv_income'] = df['income'].pow(-1.0)
 
-att_list = ['gvi', 'flood','lslide']
+att_list = ['gvi', 'fire','flood','lslide']
 
 # normalize attributes for the analysis
 att_list_norm = []
@@ -79,7 +79,7 @@ for att_norm in att_list_norm:
 # parameters set up
 weigth_type = 'o' # 'o' = original binary, 'r' = row-stand.
 
-permutations = 9999 # number of random permutations
+permutations = 999 # number of random permutations
 
 significance = 0.05
 
@@ -198,7 +198,7 @@ for k in range(0,permutations):
     
 
 # simulated statistics matrix 
-C_ki_perm = np.array(C_ki_perm_list).transpose()
+C_ki_sim = np.array(C_ki_perm_list).transpose()
 
 
 ## save simulated stats in a file for future computations
@@ -207,8 +207,8 @@ C_ki_perm = np.array(C_ki_perm_list).transpose()
 
 
 # simulated statistics moments 
-E_C_ki_perm= [np.mean(C_ki_perm[i]) for i in range(0,len(C_ki_perm))] # mean from permutations
-S_C_ki_perm = [np.std(C_ki_perm[i]) for i in range(0,len(C_ki_perm))] # standard deviation from permutations
+E_C_ki_perm= [np.mean(C_ki_sim[i]) for i in range(0,len(C_ki_sim))] # mean from permutations
+S_C_ki_perm = [np.std(C_ki_sim[i]) for i in range(0,len(C_ki_sim))] # standard deviation from permutations
 C_ki_z_sim = (C_ki - E_C_ki_perm)/S_C_ki_perm # standard variates from permutations
 
 # simulated p-values based on permutations (one-sided), null: spatial randomness
@@ -216,7 +216,7 @@ C_ki_z_sim = (C_ki - E_C_ki_perm)/S_C_ki_perm # standard variates from permutati
 C_p_sim = np.zeros((np.shape(C_ki)[0]))
 
 for i in range(0,np.shape(C_ki)[0]):
-    above = C_ki_perm[i] > C_ki[i] 
+    above = C_ki_sim[i] > C_ki[i] 
     larger = above.sum(0)
     if (permutations - larger) < larger:
         larger = permutations - larger
